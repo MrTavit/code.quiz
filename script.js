@@ -62,7 +62,7 @@ startButton.addEventListener('click', function(event){
     // Function that wll initiate the quiz
     timer.innerHTML = startTimer()
     renderQuestions()
-    renderChoices()
+    // renderChoices()
 })
 
 // Start timer
@@ -90,18 +90,18 @@ function renderQuestions(){
     questionBox.innerHTML = questions[questionCounter]
     for (var i = 0; i < 4; i++){
     var item = document.createElement("button")
-    item.setAttribute('class', 'btn-block')
+    item.setAttribute('class', 'btn-block btn-primary')
     item.textContent = answers[questionCounter][i]
     answerBox.appendChild(item)
     
     }}
 
 
-function renderChoices(){
-    choices = "<ul>"
-    answers.forEach(myFunction)
-    choices += "</ul>"
-}
-function myFunction(value) {
-    choices += "<li>" + value + "</li>";
-  } 
+// function renderChoices(){
+//     choices = "<ul>"
+//     answers.forEach(myFunction)
+//     choices += "</ul>"
+// }
+// function myFunction(value) {
+//     choices += "<li>" + value + "</li>";
+//   } 
