@@ -68,21 +68,23 @@ startButton.addEventListener('click', function(event){
 // Start timer
 // Keep counting down as long as timer is above 0
 function startTimer() {
-    var timer = 60
+    var timer = 10
+    interval = setInterval(function(){
     if (timer > 0){
-        interval = setInterval(function(){
             timer--
+            console.log(timer)
             return renderTimer(timer)
-        }, 1000)
     } else {
-        //When time reaches 0 end game
-        // endGame()
+        clearInterval(interval)
+        console.log("Time's up!")
     }
+        }, 1000)
+           //When time reaches 0 end game
+    // endGame()
 }
 
 function renderTimer(num) {
     timer.innerHTML = num
-    console.log(timer.innerHTML)
 }
 
 function renderQuestions(){
