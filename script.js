@@ -14,25 +14,25 @@ var answers = [
     "3": "This is choice D"
 },
 {
-    "0": "This is choice A",
+    "0": "This is question 2",
     "1": "This is choice B",
     "2": "This is choice C",
     "3": "This is choice D"
 },
 {
-    "0": "This is choice A",
+    "0": "This is question 3",
     "1": "This is choice B",
     "2": "This is choice C",
     "3": "This is choice D"
 },
 {
-    "0": "This is choice A",
+    "0": "This is question 4",
     "1": "This is choice B",
     "2": "This is choice C",
     "3": "This is choice D"
 },
 {
-    "0": "This is choice A",
+    "0": "This is question 5",
     "1": "This is choice B",
     "2": "This is choice C",
     "3": "This is choice D"
@@ -72,38 +72,52 @@ function startTimer() {
     interval = setInterval(function(){
     if (timer > 0){
             timer--
-            console.log(timer)
+            // console.log(timer)
             return renderTimer(timer)
     } else {
+        //When time reaches 0 end game
+        // endGame()
         clearInterval(interval)
         console.log("Time's up!")
     }
         }, 1000)
-           //When time reaches 0 end game
-    // endGame()
 }
 
 function renderTimer(num) {
     timer.innerHTML = num
 }
+// change to create buttons first, then change innerHTML
 
 function renderQuestions(){
+    
+    // Resets the answerBox to an empty string
+    answerBox.innerHTML = ""
+    
+    // counter for questions asked vs total number of questions    
     if(questionCounter < questions.length)
+
+    // change HTML of question to question based on counter
     questionBox.innerHTML = questions[questionCounter]
+
+    // Creates buttons for answer choices
+    // hard coded for 4 choices
     for (var i = 0; i < 4; i++){
     var item = document.createElement("button")
+    // Set classes to buttons for formatting
+    // id is set to the index, for keeping score later
     item.setAttribute('class', 'btn-block btn-primary')
+    item.setAttribute('id', `choice${(i + 1)} `)
+    // Text content of button is answers object, with the question counter and incrementer as arguments
     item.textContent = answers[questionCounter][i]
     answerBox.appendChild(item)
     
-    }}
+    }
+}
 
-
-// function renderChoices(){
-//     choices = "<ul>"
-//     answers.forEach(myFunction)
-//     choices += "</ul>"
-// }
-// function myFunction(value) {
-//     choices += "<li>" + value + "</li>";
-//   } 
+// Click event listener added to the answer box.
+// When one of the options in the answer box is selected, the next question will be displayed
+answerBox.addEventListener('click', function(event){
+    event.preventDefault()
+    questionCounter++
+    renderQuestions()
+})
