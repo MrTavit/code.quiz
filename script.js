@@ -49,6 +49,7 @@ var answerBox = document.querySelector("#answer-box")
 var choices
 var startButton = document.querySelector("#start-button")
 var interval
+var score
 
 // Quiz start button event listener.
 // When start is clicked
@@ -70,18 +71,37 @@ startButton.addEventListener('click', function (event) {
 function startTimer() {
     var timer = 10
     interval = setInterval(function () {
-        if (timer > 0) {
+        if (timer > 0 && questionCounter < questions.length) {
             timer--
             // console.log(timer)
             return renderTimer(timer)
         } else {
             //When time reaches 0 end game
-            // endGame()
+            score = timer
             clearInterval(interval)
             console.log("Time's up!")
-            // enterInitials() - function for entering initials when time is up
+            enterInitials() 
+            // - function for entering initials when time is up or last question is reached
         }
     }, 1000)
+}
+
+function enterInitials() {
+    //Game over screen
+    questionBox.innerHTML = "Game over!"
+    // Show the final score
+    answerBox.innerHTML = `Your final score was ${score}<br>`
+    // Entry box to enter players initials and a submit button
+    var el = document.createElement('div')
+    console.log(el)
+    el.innerHTML = (`Enter initials: <input placeholder = "AJC"></input> <button>Submit</button>`)
+    // el.setAttribute('class', 'btn-primary')
+    answerBox.appendChild(el)
+    // When submit is clicked, initials are paired with score
+    // Initials and score are recorded in high score list
+    // High score list is shown 
+        // Go back button returns to the game
+        // Clear highscores button clears the list 
 }
 
 function renderTimer(num) {
@@ -116,6 +136,8 @@ function renderQuestions() {
 }
 // Click event listener added to the answer box.
 // When one of the options in the answer box is selected, the next question will be displayed
+
+// Change to only work when clicking on one of the choice buttons
 answerBox.addEventListener('click', function (event) {
     event.preventDefault()
     questionCounter++
