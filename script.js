@@ -127,6 +127,14 @@ function renderQuestions() {
             // id is set to the index, for keeping score later
             item.setAttribute('class', 'btn-block btn-primary')
             item.setAttribute('id', `choice${(i + 1)} `)
+
+            // Sets click function to buttons as they are generated
+            item.addEventListener('click', function(event){
+                event.preventDefault()
+                questionCounter++
+                renderQuestions()
+            })
+
             // Text content of button is answers object, with the question counter and incrementer as arguments
             item.textContent = answers[questionCounter][i]
             answerBox.appendChild(item)
@@ -138,9 +146,9 @@ function renderQuestions() {
 // When one of the options in the answer box is selected, the next question will be displayed
 
 // Change to only work when clicking on one of the choice buttons
-answerBox.addEventListener('click', function (event) {
-    event.preventDefault()
-    questionCounter++
-    renderQuestions()
-})
+// answerBox.addEventListener('click', function (event) {
+//     event.preventDefault()
+//     questionCounter++
+//     renderQuestions()
+// })
 
