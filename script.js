@@ -60,6 +60,7 @@ var answerBox = document.querySelector("#answer-box")
 var startButton = document.querySelector("#start-button")
 var interval
 var score
+var correctQuestions = 5
 
 // Quiz start button event listener.
 // When start is clicked
@@ -99,7 +100,11 @@ function enterInitials() {
     //Game over screen
     questionBox.innerHTML = "Game over!"
     // Show the final score
-    answerBox.innerHTML = `Your final score was ${score}<br>`
+    if(correctQuestions === 1){
+        answerBox.innerHTML = `You got ${correctQuestions} question correct.<br>Your final score was ${score}<br>`
+    } else {
+    answerBox.innerHTML = `You got ${correctQuestions} questions correct.<br>Your final score was ${score}<br>`
+}
     // Entry box to enter players initials and a submit button
     var el = document.createElement('div')
     console.log(el)
@@ -152,48 +157,43 @@ function renderQuestions() {
         }
     }
 }
-// Click event listener added to the answer box.
-// When one of the options in the answer box is selected, the next question will be displayed
 
 // document.querySelector('#answerBox').addEventListener('click', function(e){
 //     if(!e.target.classlist.contains('choice')){
 //         console.log('test)
 //     }
 // })
-// button for each answer
 
 
 function checkAnswer(event) {
     var choice = event.target.id
-    // target.id
     // check question number
     // First question, answer has id choice3.
     if(questionCounter === 0 && choice !== 'choice3'){
-        console.log(questionCounter)
-        timeLeft -= 10
+        // compare clicked choice to correct answer
+        // if incorrect answer decrease timer
+        wrongAnswer()
     }
     if(questionCounter === 1 && choice !== 'choice2'){
-        console.log(questionCounter)
-        timeLeft -= 10
+        wrongAnswer()
     }
     if(questionCounter === 2 && choice !== 'choice4'){
-        console.log(questionCounter)
-        timeLeft -= 10
+        wrongAnswer()
     }
     if(questionCounter === 3 && choice !== 'choice1'){
-        console.log(questionCounter)
-        timeLeft -= 10
+        wrongAnswer()
     }
     if(questionCounter === 4 && choice !== 'choice3'){
-        console.log(questionCounter)
-        timeLeft -= 10
+        wrongAnswer()
     }
     // After checking answer, increment to next question
     // Rerender timer
     questionCounter++
     renderTimer(timeLeft)
-
 }
-    //compare clicked choice to correct answer
-    //if incorrect answer decrease timer
-    //else do nothing
+
+// Simple function to lower the timer and reduce the number of correct questions
+function wrongAnswer(){
+    timeLeft -= 10
+    correctQuestions--
+}
