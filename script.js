@@ -5,6 +5,17 @@ var questions = [
     "This is the fourth question",
     "This is the fifth question",
 ]
+
+// const questions = [
+//     {
+//         question: "First question",
+//         a: 'a',
+//         b: 'b',
+//         c: 'c',
+//         d: 'd',
+//         answer: 'd'
+//     },
+// ]
 // Templates to hold questions and answers
 var answers = [
     {
@@ -46,7 +57,6 @@ var intro = document.querySelector("#intro")
 var questionBox = document.querySelector("#question-box")
 var questionCounter = 0
 var answerBox = document.querySelector("#answer-box")
-var choices
 var startButton = document.querySelector("#start-button")
 var interval
 var score
@@ -63,21 +73,20 @@ startButton.addEventListener('click', function (event) {
     // Function that wll initiate the quiz
     timer.innerHTML = startTimer()
     renderQuestions()
-    // renderChoices()
 })
 
 // Start timer
-// Keep counting down as long as timer is above 0
+// Keep counting down as long as timer is above 0 and there are more questions available
+var timeLeft = 60
 function startTimer() {
-    var timer = 10
     interval = setInterval(function () {
-        if (timer > 0 && questionCounter < questions.length) {
-            timer--
+        if (timeLeft > 0 && questionCounter < questions.length) {
+            timeLeft--
             // console.log(timer)
-            return renderTimer(timer)
+            renderTimer(timeLeft)
         } else {
-            //When time reaches 0 end game
-            score = timer
+            //When time reaches 0, or there are no more questions end game
+            score = timeLeft
             clearInterval(interval)
             console.log("Time's up!")
             enterInitials() 
@@ -94,7 +103,7 @@ function enterInitials() {
     // Entry box to enter players initials and a submit button
     var el = document.createElement('div')
     console.log(el)
-    el.innerHTML = (`Enter initials: <input placeholder = "AJC"></input> <button>Submit</button>`)
+    el.innerHTML = (`Enter initials: <input placeholder = "AAA"></input> <button>Submit</button>`)
     // el.setAttribute('class', 'btn-primary')
     answerBox.appendChild(el)
     // When submit is clicked, initials are paired with score
@@ -126,12 +135,13 @@ function renderQuestions() {
             // Set classes to buttons for formatting
             // id is set to the index, for keeping score later
             item.setAttribute('class', 'btn-block btn-primary')
-            item.setAttribute('id', `choice${(i + 1)} `)
+            item.setAttribute('id', `choice${(i + 1)}`)
 
             // Sets click function to buttons as they are generated
             item.addEventListener('click', function(event){
                 event.preventDefault()
-                questionCounter++
+                // questionCounter++
+                checkAnswer(event)
                 renderQuestions()
             })
 
@@ -145,10 +155,45 @@ function renderQuestions() {
 // Click event listener added to the answer box.
 // When one of the options in the answer box is selected, the next question will be displayed
 
-// Change to only work when clicking on one of the choice buttons
-// answerBox.addEventListener('click', function (event) {
-//     event.preventDefault()
-//     questionCounter++
-//     renderQuestions()
+// document.querySelector('#answerBox').addEventListener('click', function(e){
+//     if(!e.target.classlist.contains('choice')){
+//         console.log('test)
+//     }
 // })
+// button for each answer
 
+
+function checkAnswer(event) {
+    var choice = event.target.id
+    // target.id
+    // check question number
+    // First question, answer has id choice3.
+    if(questionCounter === 0 && choice !== 'choice3'){
+        console.log(questionCounter)
+        timeLeft -= 10
+    }
+    if(questionCounter === 1 && choice !== 'choice2'){
+        console.log(questionCounter)
+        timeLeft -= 10
+    }
+    if(questionCounter === 2 && choice !== 'choice4'){
+        console.log(questionCounter)
+        timeLeft -= 10
+    }
+    if(questionCounter === 3 && choice !== 'choice1'){
+        console.log(questionCounter)
+        timeLeft -= 10
+    }
+    if(questionCounter === 4 && choice !== 'choice3'){
+        console.log(questionCounter)
+        timeLeft -= 10
+    }
+    // After checking answer, increment to next question
+    // Rerender timer
+    questionCounter++
+    renderTimer(timeLeft)
+
+}
+    //compare clicked choice to correct answer
+    //if incorrect answer decrease timer
+    //else do nothing
