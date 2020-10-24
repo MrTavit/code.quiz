@@ -78,18 +78,22 @@ startButton.addEventListener('click', function (event) {
 
 // Start timer
 // Keep counting down as long as timer is above 0 and there are more questions available
-var timeLeft = 60
+var timeLeft = 10
 function startTimer() {
     interval = setInterval(function () {
         if (timeLeft > 0 && questionCounter < questions.length) {
             timeLeft--
             // console.log(timer)
             renderTimer(timeLeft)
-        } else {
+        } else if (timeLeft <= 0){
+            score = 0
+            clearInterval(interval)
+            enterInitials()
+        }
+        else {
             //When time reaches 0, or there are no more questions end game
             score = timeLeft
             clearInterval(interval)
-            console.log("Time's up!")
             enterInitials() 
             // - function for entering initials when time is up or last question is reached
         }
@@ -108,7 +112,7 @@ function enterInitials() {
     // Entry box to enter players initials and a submit button
     var el = document.createElement('div')
     console.log(el)
-    el.innerHTML = (`Enter initials: <input placeholder = "AAA"></input> <button>Submit</button>`)
+    el.innerHTML = (`Enter initials: <input placeholder = "AAA"></input> <button class = 'submit-button'>Submit</button>`)
     // el.setAttribute('class', 'btn-primary')
     answerBox.appendChild(el)
     // When submit is clicked, initials are paired with score
@@ -118,8 +122,19 @@ function enterInitials() {
         // Clear highscores button clears the list 
 }
 
+function saveInitials() {
+    // Run when submit button is clicked
+    // Save content in input box to local storage with score
+    // Display initials with score to user in a list
+    // Have go back button
+    // Have button to clear list (local storage)
+}
+
 function renderTimer(num) {
     timer.innerHTML = num
+    if (num <= 0){
+        timer.innerHTML = 0
+    }
 }
 
 function renderQuestions() {
