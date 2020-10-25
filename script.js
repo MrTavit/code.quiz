@@ -50,7 +50,6 @@ var answers = [
     }
 ]
 
-
 var timer = document.querySelector(".timer")
 var header = document.querySelector("#header")
 var intro = document.querySelector("#intro")
@@ -61,7 +60,24 @@ var startButton = document.querySelector("#start-button")
 var interval
 var score
 var correctQuestions = 5
+var inputForm = document.querySelector('#input-form')
+var submitButton = document.querySelector('#submit')
+var scoreBoard = document.querySelector('#scoreboard')
+var restartButton = document.querySelector("#restart-button")
+var clearScores = document.querySelector("#clear-scores")
+var highScores = []
 
+
+function init() {
+    inputForm.style.display = "none"
+    restartButton.style.display = "none"
+    clearScores.style.display = "none"
+    // header.style.display = "block"
+    // startButton.style.display = "block"
+    // intro.style.display = "block"
+}
+
+init()
 // Quiz start button event listener.
 // When start is clicked
 // Start timer
@@ -78,15 +94,16 @@ startButton.addEventListener('click', function (event) {
 
 // Start timer
 // Keep counting down as long as timer is above 0 and there are more questions available
-var timeLeft = 10
+var timeLeft = 60
 function startTimer() {
     interval = setInterval(function () {
         if (timeLeft > 0 && questionCounter < questions.length) {
             timeLeft--
             // console.log(timer)
             renderTimer(timeLeft)
-        } else if (timeLeft <= 0){
+        } else if (timeLeft <= 0) {
             score = 0
+            correctQuestions -= (questions.length - questionCounter)
             clearInterval(interval)
             enterInitials()
         }
@@ -94,45 +111,88 @@ function startTimer() {
             //When time reaches 0, or there are no more questions end game
             score = timeLeft
             clearInterval(interval)
-            enterInitials() 
+            enterInitials()
             // - function for entering initials when time is up or last question is reached
         }
     }, 1000)
 }
 
-function enterInitials() {
-    //Game over screen
-    questionBox.innerHTML = "Game over!"
-    // Show the final score
-    if(correctQuestions === 1){
-        answerBox.innerHTML = `You got ${correctQuestions} question correct.<br>Your final score was ${score}<br>`
-    } else {
-    answerBox.innerHTML = `You got ${correctQuestions} questions correct.<br>Your final score was ${score}<br>`
-}
-    // Entry box to enter players initials and a submit button
-    var el = document.createElement('div')
-    console.log(el)
-    el.innerHTML = (`Enter initials: <input placeholder = "AAA"></input> <button class = 'submit-button'>Submit</button>`)
-    // el.setAttribute('class', 'btn-primary')
-    answerBox.appendChild(el)
-    // When submit is clicked, initials are paired with score
-    // Initials and score are recorded in high score list
-    // High score list is shown 
-        // Go back button returns to the game
-        // Clear highscores button clears the list 
-}
+submitButton.addEventListener('click', function (event) {
+    event.preventDefault()
 
-function saveInitials() {
     // Run when submit button is clicked
     // Save content in input box to local storage with score
     // Display initials with score to user in a list
     // Have go back button
     // Have button to clear list (local storage)
+    
+    var userScore = document.querySelector(`#input-box`).value.trim()
+    
+    if (userScore === '') {
+        return
+    }
+    // Add new highscore to highscore array, clear input
+    highScores.push(`${userScore}: ${score}`)
+    document.querySelector(`#input-box`).value = ""
+    // save high score to local storage
+    // render high scores from local storage
+    saveInitials()
+    storeScores()
+    // renderScores()
+})
+
+
+function enterInitials() {
+    //Game over screen
+    questionBox.innerHTML = "Game over!"
+    // Show the final score
+    if (correctQuestions === 1) {
+        answerBox.innerHTML = `You got ${correctQuestions} question correct.<br>Your time remaining was: ${score}<br>`
+    } else {
+        answerBox.innerHTML = `You got ${correctQuestions} questions correct.<br>Your time remaining was: ${score}<br>`
+    }
+    inputForm.style.display = "block"
+
+    // Initials and score are recorded in high score list
+    // High score list is shown 
+    // Go back button returns to the game
+    // Clear highscores button clears the list 
+}
+
+function storeScores() {
+    localStorage.setItem('highscores', JSON.stringify(highScores))
+}
+
+function renderScores() {
+    questionBox.innerHTML = 'High Scores'
+    answerBox.innerHTML = ""
+    inputForm.style.display = 'none'
+    clearScores.style.display = "block"
+    restartButton.style.display = "block"
+
+    for (var i = 0; i < highScores.length; i++) {
+        var newScore = highScores[i]
+
+        var li = document.createElement('li')
+        li.textContent = newScore
+
+        scoreBoard.appendChild(li)
+    }
+}
+
+function saveInitials() {
+    // Get stored scores from local storage
+    var storedScores = JSON.parse(localStorage.getItem('highscores'))
+
+    if (storedScores !== null) {
+        highScores = storedScores
+    }
+    renderScores()
 }
 
 function renderTimer(num) {
     timer.innerHTML = num
-    if (num <= 0){
+    if (num <= 0) {
         timer.innerHTML = 0
     }
 }
@@ -145,7 +205,7 @@ function renderQuestions() {
     // counter for questions asked vs total number of questions    
     if (questionCounter < questions.length) {
 
-        // change HTML of question to question based on counter
+        // change HTML of questionBox to question based on counter
         questionBox.innerHTML = questions[questionCounter]
 
         // Creates buttons for answer choices
@@ -158,9 +218,8 @@ function renderQuestions() {
             item.setAttribute('id', `choice${(i + 1)}`)
 
             // Sets click function to buttons as they are generated
-            item.addEventListener('click', function(event){
+            item.addEventListener('click', function (event) {
                 event.preventDefault()
-                // questionCounter++
                 checkAnswer(event)
                 renderQuestions()
             })
@@ -173,32 +232,26 @@ function renderQuestions() {
     }
 }
 
-// document.querySelector('#answerBox').addEventListener('click', function(e){
-//     if(!e.target.classlist.contains('choice')){
-//         console.log('test)
-//     }
-// })
-
 
 function checkAnswer(event) {
     var choice = event.target.id
     // check question number
     // First question, answer has id choice3.
-    if(questionCounter === 0 && choice !== 'choice3'){
+    if (questionCounter === 0 && choice !== 'choice3') {
         // compare clicked choice to correct answer
         // if incorrect answer decrease timer
         wrongAnswer()
     }
-    if(questionCounter === 1 && choice !== 'choice2'){
+    if (questionCounter === 1 && choice !== 'choice2') {
         wrongAnswer()
     }
-    if(questionCounter === 2 && choice !== 'choice4'){
+    if (questionCounter === 2 && choice !== 'choice4') {
         wrongAnswer()
     }
-    if(questionCounter === 3 && choice !== 'choice1'){
+    if (questionCounter === 3 && choice !== 'choice1') {
         wrongAnswer()
     }
-    if(questionCounter === 4 && choice !== 'choice3'){
+    if (questionCounter === 4 && choice !== 'choice3') {
         wrongAnswer()
     }
     // After checking answer, increment to next question
@@ -208,7 +261,7 @@ function checkAnswer(event) {
 }
 
 // Simple function to lower the timer and reduce the number of correct questions
-function wrongAnswer(){
-    timeLeft -= 10
+function wrongAnswer() {
+    timeLeft -= 15
     correctQuestions--
 }
