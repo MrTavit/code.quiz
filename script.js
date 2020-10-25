@@ -99,7 +99,6 @@ function startTimer() {
     interval = setInterval(function () {
         if (timeLeft > 0 && questionCounter < questions.length) {
             timeLeft--
-            // console.log(timer)
             renderTimer(timeLeft)
         } else if (timeLeft <= 0) {
             score = 0
@@ -136,9 +135,8 @@ submitButton.addEventListener('click', function (event) {
     document.querySelector(`#input-box`).value = ""
     // save high score to local storage
     // render high scores from local storage
-    saveInitials()
     storeScores()
-    // renderScores()
+    saveInitials()
 })
 
 
@@ -167,6 +165,7 @@ function renderScores() {
     questionBox.innerHTML = 'High Scores'
     answerBox.innerHTML = ""
     inputForm.style.display = 'none'
+    scoreBoard.style.display = 'block'
     clearScores.style.display = "block"
     restartButton.style.display = "block"
 
@@ -265,3 +264,12 @@ function wrongAnswer() {
     timeLeft -= 15
     correctQuestions--
 }
+
+restartButton.addEventListener('click', function(){
+    location.reload()
+})
+
+clearScores.addEventListener('click', function(){
+    localStorage.clear('highscores')
+    scoreBoard.innerHTML = ''
+})
